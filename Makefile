@@ -1,23 +1,28 @@
+#!/usr/bin/make -f
 include ./standard_def.mk
 
 EXEC=$(ROOT)/$(DIR_BIN)/AlainPeters
-
-LIBR=$(ROOT)/$(DIR_LIB)/AlainPeters.so
-
 
 all: createdirectories $(EXEC)
 
 createdirectories:
 	@mkdir -p $(DIR_OBJ) $(DIR_BIN) $(DIR_LIB)
 
-
+#ifeq ($(MAKECMDGOALS),all)
 -include $(ROOT)/$(DIR_SRC)/src.mk
+#endif
 
-#lib:	createdirectories $(LIBR)
 
-#-include $(ROOT)/$(DIR_SRC)/libsrc.mk
 
 .PHONY: clean doc lib
+
+LIBR=$(ROOT)/$(DIR_LIB)/AlainPeters.so
+
+lib:	createdirectories $(LIBR)
+
+ifeq ($(MAKECMDGOALS),lib)
+-include $(ROOT)/$(DIR_SRC)/libsrc.mk
+endif
 
 doc:
 	@echo -n "Generation de la DOC ... "

@@ -1,14 +1,13 @@
 SRC=$(wildcard $(ROOT)/$(DIR_SRC)/*.cpp)
 OBJ=$(SRC:$(ROOT)/$(DIR_SRC)/%.cpp=$(ROOT)/$(DIR_OBJ)/%.o)
 
--include $(ROOT)/$(DIR_SRC)/requests/src.mk
+-include $(ROOT)/$(DIR_SRC)/main/src.mk
 -include $(ROOT)/$(DIR_SRC)/files/src.mk
--include $(ROOT)/$(DIR_SRC)/html/src.mk
 -include $(ROOT)/$(DIR_SRC)/data/src.mk
 -include $(ROOT)/$(DIR_SRC)/database/src.mk
 
 # Compilation of the program
-$(EXEC): $(OBJ) $(REQ) $(DBS) $(DATA) $(FILE) $(HTM) $(DYNAMIC_LIBS:%=$(ROOT)/$(DIR_SRC)/$(DIR_IN)/%.so)
+$(EXEC): $(OBJ) $(MAIN) $(DBS) $(DATA) $(FILE) $(DYNAMIC_LIBS:%=$(ROOT)/$(DIR_SRC)/$(DIR_IN)/%.so)
 	@echo "Linking ..... : $@"
 	@$(GXX) -ldl -o $@ $^ $(CFLAGS)
 

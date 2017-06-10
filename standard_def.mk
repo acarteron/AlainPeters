@@ -8,12 +8,12 @@ DIR_OBJ=obj
 DIR_LIB=lib
 DIR_HDR=includes
 DIR_DOC=doc
-DIR_IN=libSakifo
+DIR_IN=libAlainPeters
 
 ## Compilation
 GXX=g++
 # Flags for linking
-CFLAGS=-I $(ROOT)/$(DIR_HDR) -lPocoFoundation -lPocoNet -lPocoJSON -lPocoXML  -lPocoUtil -lPocoMongoDB
+CFLAGS=-I $(ROOT)/$(DIR_HDR) -lPocoFoundation -lPocoNet -lPocoJSON -lPocoXML  -lPocoUtil -lPocoMongoDB -ldl 
 # Flags for objects
 CFLAGS_OBJ=-I $(ROOT)/$(DIR_HDR) -O2 -Wall -Wextra -std=c++11 
 # Flags for libraries objects
