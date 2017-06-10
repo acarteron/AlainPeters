@@ -1,0 +1,49 @@
+{
+    "priorities": [
+	"internet",
+	"domassist_tablet",
+	"vera",
+	"sensors"
+    ],
+    "internet":{
+	"number":"",
+	"heartbeatAlert":{
+	   "number":"",
+	    "streams":[]
+	}
+	
+    },
+    "domassist_tablet":{
+	"number":"",
+	"shutdownAlert":{
+	   "number":"",
+	    "streams":[]
+	},
+	"startDomassist":{
+	   "number":"",
+	    "streams":[]
+	},
+	"tabletRestarted":{
+	   "number":"",
+	    "streams":[]
+	}
+    },
+    "vera":{
+	"number":""
+    },
+    "sensors":{
+	"number":"",
+	"batteryAlert":{
+	   "number":"",
+	    "streams":[]
+	},
+	"batteryWarning":{
+	   "number":"",
+	    "streams":[]
+	},
+	"commfailureAlert":{
+	   "number":"",
+	    "streams":[]
+	}
+    }
+}
