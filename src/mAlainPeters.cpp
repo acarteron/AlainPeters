@@ -64,6 +64,22 @@ std::vector<std::string> stream_list_to_vector(std::string stream_list){
   }
   return vector_streams;
 }
+Poco::JSON::Array::Ptr getPriorities(){
+  Poco::JSON::Array::Ptr all_prio_array=new Poco::JSON::Array();
+  Files file("data/order.json");
+  std::string prios=file.readFile();
+  file.closeFile();
+  Poco::JSON::Parser      parser;
+  Poco::Dynamic::Var      str_var;
+  Poco::JSON::Object::Ptr str_obj;
+  std::cout<<prios<<std::endl;
+
+  str_var = parser.parse(prios);
+  str_obj = str_var.extract<Poco::JSON::Object::Ptr>();
+  str_var = str_obj->get("priorities");
+  all_prio_array = str_var.extract<Poco::JSON::Array::Ptr>();
+  return all_prio_array;
+}
 
 int main(int argc, char** argv){
   std::string date="2017-06-08";
@@ -92,6 +108,7 @@ int main(int argc, char** argv){
   for(size_t i(0);i<users.size();++i){
     allarray->add(users[i].getAll());
   }
+  all->set("priorities",getPriorities());
   all->set("date",date);
   all->set("results",allarray);
   std::ostringstream  out;

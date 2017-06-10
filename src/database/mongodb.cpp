@@ -17,7 +17,7 @@
 
 #include <iostream>
 
-const std::string Mongodb::db_name="Streams2";
+const std::string Mongodb::db_name="Streams2";//"Streams-tests";
 
 
 Mongodb::Mongodb(){
