@@ -13,11 +13,11 @@ DIR_IN=libAlainPeters
 ## Compilation
 GXX=g++
 # Flags for linking
-CFLAGS=-I $(ROOT)/$(DIR_HDR) -lPocoFoundation -lPocoNet -lPocoJSON -lPocoXML  -lPocoUtil -lPocoMongoDB -ldl 
+CFLAGS= -ldl -lPocoFoundation -lPocoNet -lPocoJSON -lPocoXML  -lPocoUtil -lPocoMongoDB
 # Flags for objects
 CFLAGS_OBJ=-I $(ROOT)/$(DIR_HDR) -O2 -Wall -Wextra -std=c++11 
 # Flags for libraries objects
 CFLAGS_DYNAMIC_LIBS_OBJ=-fPIC
 # Flags for libraries linkins
-CFLAGS_DYNAMIC_LIBS=-shared
+CFLAGS_DYNAMIC_LIBS=-shared -Wl,-soname,libAlainPeters.so
 

@@ -16,7 +16,7 @@ createdirectories:
 
 .PHONY: clean doc lib
 
-LIBR=$(ROOT)/$(DIR_LIB)/AlainPeters.so
+LIBR=$(ROOT)/$(DIR_LIB)/libAlainPeters.so
 
 lib:	createdirectories $(LIBR)
 
