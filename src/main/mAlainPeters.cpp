@@ -1,13 +1,11 @@
 #include <iostream>
-#include "files/files.hh"
 #include "libAlainPeters.hh"
 int main(int argc, char** argv){
   std::string date="2017-06-08";
   libAlainPeters liba;
   liba.do_what_you_do(date);
-  Files file("res/"+date,"out");
-  file.writeFile(liba.getDailyReport_as_string());
-  file.closeFile();
+  
+  std::cout<<liba.getDailyReport_as_string()<<std::endl;
 }
 /** \mainpage : 
  * \author adcarter
