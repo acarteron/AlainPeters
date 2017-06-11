@@ -12,6 +12,7 @@ libAlainPeters::~libAlainPeters(){
 }
 void libAlainPeters::do_what_you_do(std::string date){
   //std::string date="2017-06-08";
+  all=new Poco::JSON::Object();
   std::string mongo_host="localhost";
   int mongo_port=27017;
   std::vector<User> users;
@@ -26,7 +27,7 @@ void libAlainPeters::do_what_you_do(std::string date){
     us.set_date(date);
     for(size_t j(0);j<vect_rule_list.size();++j){
        std::vector<std::string> vector_streams=stream_list_to_vector(Mongodb::get_streams_of_rules_and_coll_at_a_date(mongo_host,mongo_port,user_str,vect_rule_list[j],date));
-      us.addrules(vect_rule_list[j],vector_streams);		     
+      us.addrules(vect_rule_list[j],vector_streams);
     }
     if(vect_rule_list.size()>0){
       users.push_back(us);	    
@@ -36,9 +37,30 @@ void libAlainPeters::do_what_you_do(std::string date){
   for(size_t i(0);i<users.size();++i){
     allarray->add(users[i].getAll());
   }
-  all->set("priorities",getPriorities());
   all->set("date",date);
   all->set("results",allarray);
+  getPriorities();
+}
+void libAlainPeters::getPriorities(){
+  Poco::JSON::Array::Ptr all_prio_array=new Poco::JSON::Array();
+  Files file("data/order.json");
+  std::string prios=file.readFile();
+  file.closeFile();
+  Poco::JSON::Parser      parser;
+  Poco::Dynamic::Var      str_var;
+  Poco::JSON::Object::Ptr str_obj;
+
+  str_var = parser.parse(prios);
+  str_obj = str_var.extract<Poco::JSON::Object::Ptr>();
+  str_var = str_obj->get("priorities");
+  all_prio_array = str_var.extract<Poco::JSON::Array::Ptr>();
+  Poco::Dynamic::Array da = *all_prio_array;
+  for(size_t i(0);i<da.size();++i){
+    all->set(da[i],str_obj->get(da[i]));
+    //vector_collection.push_back(da[i]);
+  }
+  
+  all->set("priorities",all_prio_array);
 }
 std::string libAlainPeters::getDailyReport_as_string(){
   std::ostringstream  out;
@@ -101,18 +123,4 @@ std::vector<std::string> libAlainPeters::stream_list_to_vector(std::string strea
   }
   return vector_streams;
 }
-Poco::JSON::Array::Ptr libAlainPeters::getPriorities(){
-  Poco::JSON::Array::Ptr all_prio_array=new Poco::JSON::Array();
-  Files file("data/order.json");
-  std::string prios=file.readFile();
-  file.closeFile();
-  Poco::JSON::Parser      parser;
-  Poco::Dynamic::Var      str_var;
-  Poco::JSON::Object::Ptr str_obj;
 
-  str_var = parser.parse(prios);
-  str_obj = str_var.extract<Poco::JSON::Object::Ptr>();
-  str_var = str_obj->get("priorities");
-  all_prio_array = str_var.extract<Poco::JSON::Array::Ptr>();
-  return all_prio_array;
-}

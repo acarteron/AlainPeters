@@ -23,7 +23,6 @@
 
 #include <iostream>
 
-
 #include <vector>
 #include <Poco/Dynamic/Var.h>
 #include <Poco/JSON/JSON.h>
@@ -37,7 +36,7 @@ private:
   std::vector<std::string> collection_to_vector(std::string);
   std::vector<std::string> rule_list_to_vector(std::string);
   std::vector<std::string> stream_list_to_vector(std::string);
-  Poco::JSON::Array::Ptr getPriorities();
+  void getPriorities();
 public:
   /** \brief Void constructor
    * 
