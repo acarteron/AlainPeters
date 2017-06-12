@@ -25,8 +25,8 @@
 #include <fstream>
 #include <istream>
 #include <cstring>
-
-class Files{
+namespace apeters{
+class File{
 private:
   std::string fileName; ///< the file name
 
@@ -45,7 +45,7 @@ public:
    * This only set opening method as in  
    * 
    */
-  Files();
+  File();
   /** \brief One arguement constructor
    * \param file name as string
    * 
@@ -53,7 +53,7 @@ public:
    * set file name calling method setFileName  
    *
    */
-  Files(std::string);
+  File(std::string);
   /** \brief Two arguement constructor
    * \param file name as string, opening mode as string
    * 
@@ -61,13 +61,13 @@ public:
    * set file name calling method setFileName  
    *
    */
-  Files(std::string,std::string);
+  File(std::string,std::string);
   /** \brief Destructor
    * 
    * Close the file 
    *
    */
-  ~Files();
+  ~File();
   /** \brief Method to set file name
    * \param file name as string
    *
@@ -87,5 +87,5 @@ public:
   int writeFile(std::string);
 
 };
-
+}
 #endif

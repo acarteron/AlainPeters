@@ -7,7 +7,7 @@
 #include "data/user.hh"
 
 libAlainPeters::libAlainPeters(){
-  Files file("data/db.json");
+  apeters::File file("data/db.json");
   std::string db_param=file.readFile();
   file.closeFile();
   Poco::JSON::Parser      parser;
@@ -28,18 +28,18 @@ libAlainPeters::~libAlainPeters(){
 void libAlainPeters::do_what_you_do(std::string date){
   //std::string date="2017-06-08";
   all=new Poco::JSON::Object();
-  std::vector<User> users;
-  std::string collections=Mongodb::get_collections(mongo_host,mongo_port,mongo_base);  
+  std::vector<apeters::User> users;
+  std::string collections=apeters::Mongodb::get_collections(mongo_host,mongo_port,mongo_base);  
   std::vector<std::string> vect_user=collection_to_vector(collections);
   for(size_t i(0);i<vect_user.size();++i){
     std::string user_str=vect_user[i];//"_DomassistTeynie";
-    std::string rules_list=Mongodb::get_rules_of_collection_at_a_date(mongo_host,mongo_port,user_str,date,mongo_base);
+    std::string rules_list=apeters::Mongodb::get_rules_of_collection_at_a_date(mongo_host,mongo_port,user_str,date,mongo_base);
     std::vector<std::string> vect_rule_list=rule_list_to_vector(rules_list);
-    User us;
+    apeters::User us;
     us.set_user(user_str);//vect_user[i];
     us.set_date(date);
     for(size_t j(0);j<vect_rule_list.size();++j){
-      std::vector<std::string> vector_streams=stream_list_to_vector(Mongodb::get_streams_of_rules_and_coll_at_a_date(mongo_host,mongo_port,user_str,vect_rule_list[j],date,mongo_base));
+      std::vector<std::string> vector_streams=stream_list_to_vector(apeters::Mongodb::get_streams_of_rules_and_coll_at_a_date(mongo_host,mongo_port,user_str,vect_rule_list[j],date,mongo_base));
       us.addrules(vect_rule_list[j],vector_streams);
     }
     if(vect_rule_list.size()>0){
@@ -56,7 +56,7 @@ void libAlainPeters::do_what_you_do(std::string date){
 }
 void libAlainPeters::getPriorities(){
   Poco::JSON::Array::Ptr all_prio_array=new Poco::JSON::Array();
-  Files file("data/order.json");
+  apeters::File file("data/order.json");
   std::string prios=file.readFile();
   file.closeFile();
   Poco::JSON::Parser      parser;

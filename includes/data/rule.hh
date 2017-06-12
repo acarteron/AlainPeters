@@ -8,7 +8,7 @@
 #include <Poco/JSON/Array.h>
 #include "data/rule_instance.hh"
 #include <algorithm>
-
+namespace apeters{
 class Rule{
   Poco::JSON::Object::Ptr rules_obj=new Poco::JSON::Object();
   Poco::JSON::Array::Ptr  rules_inst_array=new Poco::JSON::Array();
@@ -21,7 +21,7 @@ public:
   Poco::JSON::Object::Ptr get_rules_object();
   std::string to_string();
 };
-
+}
 
 
 #endif

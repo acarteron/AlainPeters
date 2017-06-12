@@ -7,6 +7,7 @@
 #include <Poco/JSON/Parser.h>
 #include <Poco/JSON/Array.h>
 #include "data/rule.hh"
+namespace apeters{
 class User{
   Poco::JSON::Object::Ptr user_obj=new Poco::JSON::Object();
   std::string date;
@@ -19,5 +20,5 @@ public:
   void addrules(std::string name,std::vector<std::string>);
   Poco::JSON::Object::Ptr getAll();
 };
-
+}
 #endif // USER_HH

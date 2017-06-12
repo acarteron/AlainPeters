@@ -1,4 +1,5 @@
 #include "data/user.hh"
+namespace apeters{
 void User::set_user(std::string user_){
   user=user_;
   user_obj->set("user",user);
@@ -60,4 +61,5 @@ Poco::JSON::Object::Ptr User::getAll(){
   }
   user_obj->set("priorities",prio_array);
   return user_obj;
+}
 }

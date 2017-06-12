@@ -7,7 +7,7 @@
 #include <Poco/JSON/Parser.h>
 #include <Poco/JSON/Array.h>
 #include "data/role.hh"
-
+namespace apeters{
 class Rule_Instance{
 private:
   std::string timestamp;
@@ -24,5 +24,5 @@ public:
   Poco::JSON::Object::Ptr get_rule_instance_obj();
   std::string to_string();
 };
-
+}
 #endif // RULE_INSTANCE_HH

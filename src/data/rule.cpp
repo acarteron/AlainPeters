@@ -1,4 +1,5 @@
 #include "data/rule.hh"
+namespace apeters{
 static bool sortRuleByRole(Rule_Instance rule1_,Rule_Instance rule2_){
   if(rule1_.getRoles()[0].getLocation().compare(rule2_.getRoles()[0].getLocation())==0){
     return rule1_.getRoles()[0].getKind()<rule2_.getRoles()[0].getKind();
@@ -46,4 +47,5 @@ std::string Rule::to_string(){
   std::ostringstream  out;
   rules_inst_array->stringify(out,0);
   return  out.str();
+}
 }

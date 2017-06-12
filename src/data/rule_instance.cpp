@@ -1,6 +1,6 @@
 #include "data/rule_instance.hh"
 #include "data/Utils.hpp"
-
+namespace apeters{
 std::vector<Role> Rule_Instance::getRoles(){return roles;}
 void Rule_Instance::set_timestamp(std::string timestamp_){timestamp=timestamp_;}
 bool Rule_Instance::operator==(const Rule_Instance& rule_) const{
@@ -50,4 +50,5 @@ std::string Rule_Instance::to_string(){
   std::ostringstream  out;
   rule_instance_obj->stringify(out,0);
   return out.str();
+}
 }
