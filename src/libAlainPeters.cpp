@@ -34,6 +34,7 @@ void libAlainPeters::do_what_you_do(std::string date){
   for(size_t i(0);i<vect_user.size();++i){
     std::string user_str=vect_user[i];//"_DomassistTeynie";
     std::string rules_list=apeters::Mongodb::get_rules_of_collection_at_a_date(mongo_host,mongo_port,user_str,date,mongo_base);
+    //std::cout<<rules_list<<std::endl;
     std::vector<std::string> vect_rule_list=rule_list_to_vector(rules_list);
     apeters::User us;
     us.set_user(user_str);//vect_user[i];
