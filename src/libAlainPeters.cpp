@@ -13,7 +13,7 @@ libAlainPeters::~libAlainPeters(){
 void libAlainPeters::do_what_you_do(std::string date){
   //std::string date="2017-06-08";
   all=new Poco::JSON::Object();
-  std::string mongo_host="localhost";
+  std::string mongo_host="mongostr";
   int mongo_port=27017;
   std::vector<User> users;
   std::string collections=Mongodb::get_collections(mongo_host,mongo_port);  
