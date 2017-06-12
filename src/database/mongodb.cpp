@@ -101,7 +101,7 @@ namespace apeters{
 						     const std::string & db_name){
     std::string result="[";
     Poco::MongoDB::Connection connection(host, port);
-    std::cout<<"collections "<<collection<<std::endl;
+    //std::cout<<"collections "<<collection<<std::endl;
     Poco::MongoDB::Cursor cursor(db_name, collection);
     cursor.query().selector().addNewDocument("$query").add("rule", rules);
     cursor.query().returnFieldSelector().add("timestamp", 1);
@@ -124,7 +124,7 @@ namespace apeters{
     };
     result=result.substr(0,result.size()-1);
     result+="]";
-    std::cout<<result<<std::endl;
+    //std::cout<<result<<std::endl;
     return result;
   }
   std::string Mongodb::get_rules_of_collection(const std::string & host,
@@ -153,11 +153,13 @@ namespace apeters{
 							       const std::string & db_name){
     Time time_1(date,"00:00:00.000");
     long timestamp=time_1.get_timestamp_ms();
-    long timestamp2=timestamp*86400000;
+    long timestamp2=timestamp+86400000;
     Poco::MongoDB::Document::Ptr gteltDoc=new Poco::MongoDB::Document;
     gteltDoc->add("$gte",timestamp);
     gteltDoc->add("$lt",timestamp2);
 
+    //std::cout<<rules<<" "<<timestamp<<" "<<timestamp2<<std::endl;
+    
     std::string result="[";
     Poco::MongoDB::Connection connection(host, port);
     //std::cout<<"collections "<<collection<<std::endl;
@@ -172,16 +174,17 @@ namespace apeters{
     Poco::MongoDB::ResponseMessage& response = cursor.next(connection);
     for (;;){
       for (Poco::MongoDB::Document::Vector::const_iterator it = response.documents().begin(); it != response.documents().end(); ++it){
-	//std::cout << (*it)->toString() << std::endl;
-	result+=(*it)->toString();
-	result+=",";
+      	//std::cout << (*it)->toString() << std::endl;
+      	result+=(*it)->toString();
+      	result+=",";
       }
       if (response.cursorID() == 0){
-	break;
+    	break;
       }
       response = cursor.next(connection);
     };
-    result=result.substr(0,result.size()-1);
+    if(result.compare("[")!=0)
+      result=result.substr(0,result.size()-1);
     result+="]";
     //std::cout<<result<<std::endl;
     return result;
@@ -197,7 +200,7 @@ namespace apeters{
     //{ find:"_DomassistSzelengowicz",filter:{'timestamp':{$gt:1496872800000,$lt:1495522970170000},'rule':{$ne:"raw"}}}
     Time time_1(date,"00:00:00.000");
     long timestamp=time_1.get_timestamp_ms();
-    long timestamp2=timestamp*86400000;
+    long timestamp2=timestamp+86400000;
     Poco::MongoDB::Document::Ptr gteltDoc=new Poco::MongoDB::Document;
     gteltDoc->add("$gte",timestamp);
     gteltDoc->add("$lt",timestamp2);
@@ -275,7 +278,7 @@ namespace apeters{
     if(cpt>0)
       result=result.substr(0,result.size()-1);
     result+="]";
-    std::cout<<result<<std::endl;
+    //std::cout<<result<<std::endl;
     return result;
   }
 }
