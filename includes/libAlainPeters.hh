@@ -37,6 +37,9 @@ private:
   std::vector<std::string> rule_list_to_vector(std::string);
   std::vector<std::string> stream_list_to_vector(std::string);
   void getPriorities();
+  std::string mongo_host="mongostr";
+  int mongo_port=27017;
+  std::string mongo_base="Streams";
 public:
   /** \brief Void constructor
    * 

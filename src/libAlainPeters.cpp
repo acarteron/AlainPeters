@@ -7,26 +7,39 @@
 #include "data/user.hh"
 
 libAlainPeters::libAlainPeters(){
+  Files file("data/db.json");
+  std::string db_param=file.readFile();
+  file.closeFile();
+  Poco::JSON::Parser      parser;
+  Poco::Dynamic::Var      str_var;
+  Poco::JSON::Object::Ptr str_obj;
+  
+  str_var = parser.parse(db_param);
+  str_obj = str_var.extract<Poco::JSON::Object::Ptr>();
+  str_var = str_obj->get("host");
+  mongo_host=str_var.toString();
+  str_var=str_obj->get("port");
+  mongo_port=Utils::stringTo<int>(str_var.toString());
+  str_var=str_obj->get("name");
+  mongo_base=str_var.toString();  
 }
 libAlainPeters::~libAlainPeters(){
 }
 void libAlainPeters::do_what_you_do(std::string date){
   //std::string date="2017-06-08";
   all=new Poco::JSON::Object();
-  std::string mongo_host="mongostr";
-  int mongo_port=27017;
   std::vector<User> users;
-  std::string collections=Mongodb::get_collections(mongo_host,mongo_port);  
+  std::string collections=Mongodb::get_collections(mongo_host,mongo_port,mongo_base);  
   std::vector<std::string> vect_user=collection_to_vector(collections);
   for(size_t i(0);i<vect_user.size();++i){
     std::string user_str=vect_user[i];//"_DomassistTeynie";
-    std::string rules_list=Mongodb::get_rules_of_collection_at_a_date(mongo_host,mongo_port,user_str,date);
+    std::string rules_list=Mongodb::get_rules_of_collection_at_a_date(mongo_host,mongo_port,user_str,date,mongo_base);
     std::vector<std::string> vect_rule_list=rule_list_to_vector(rules_list);
     User us;
     us.set_user(user_str);//vect_user[i];
     us.set_date(date);
     for(size_t j(0);j<vect_rule_list.size();++j){
-       std::vector<std::string> vector_streams=stream_list_to_vector(Mongodb::get_streams_of_rules_and_coll_at_a_date(mongo_host,mongo_port,user_str,vect_rule_list[j],date));
+      std::vector<std::string> vector_streams=stream_list_to_vector(Mongodb::get_streams_of_rules_and_coll_at_a_date(mongo_host,mongo_port,user_str,vect_rule_list[j],date,mongo_base));
       us.addrules(vect_rule_list[j],vector_streams);
     }
     if(vect_rule_list.size()>0){

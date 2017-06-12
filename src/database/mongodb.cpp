@@ -17,14 +17,15 @@
 
 #include <iostream>
 
-const std::string Mongodb::db_name="Streams";//"Streams-tests";
+//const std::string Mongodb::db_name="Streams";//"Streams-tests";
 
 
 Mongodb::Mongodb(){
 }
 
 std::string Mongodb::get_collections(const std::string & host,
-				     int port){
+				     int port,
+				     const std::string & db_name){
   Poco::JSON::Parser      parser;
   Poco::Dynamic::Var      str_var;
   Poco::JSON::Object::Ptr str_obj;
@@ -61,7 +62,8 @@ std::string Mongodb::get_collections(const std::string & host,
 
 std::string Mongodb::get_streams(const std::string & host,
 				 int port,
-				 const std::string & collection){
+				 const std::string & collection,
+				 const std::string & db_name){
   std::string result="[";
   Poco::MongoDB::Connection connection(host, port);
   //std::cout<<"collections "<<collection<<std::endl;
@@ -95,7 +97,8 @@ std::string Mongodb::get_streams(const std::string & host,
 std::string Mongodb::get_streams_of_rules_and_coll(const std::string & host,
 						   int port,
 						   const std::string & collection,
-						   const std::string & rules){
+						   const std::string & rules,
+						   const std::string & db_name){
   std::string result="[";
   Poco::MongoDB::Connection connection(host, port);
   std::cout<<"collections "<<collection<<std::endl;
@@ -126,7 +129,8 @@ std::string Mongodb::get_streams_of_rules_and_coll(const std::string & host,
 }
 std::string Mongodb::get_rules_of_collection(const std::string & host,
 					     int port,
-					     const std::string & collection){
+					     const std::string & collection,
+					     const std::string & db_name){
   std::string result="";
   Poco::MongoDB::Connection connection(host, port);
   Poco::MongoDB::Database db(db_name);
@@ -145,7 +149,8 @@ std::string Mongodb::get_streams_of_rules_and_coll_at_a_date(const std::string &
 							     int port,
 							     const std::string & collection,
 							     const std::string & rules,
-							     const std::string &date){
+							     const std::string &date,
+							     const std::string & db_name){
   Time time_1(date,"00:00:00.000");
   long timestamp=time_1.get_timestamp_ms();
   long timestamp2=timestamp*86400000;
@@ -184,7 +189,8 @@ std::string Mongodb::get_streams_of_rules_and_coll_at_a_date(const std::string &
 std::string Mongodb::get_rules_of_collection_at_a_date(const std::string & host,
 						       int port,
 						       const std::string & collection,
-						       const std::string & date){
+						       const std::string & date,
+						       const std::string & db_name){
 
   //{ distinct:"_DomassistSzelengowicz",key:"rule",query:{'timestamp':{$gt:1496872800000,$lt:1495522970170000},'rule':{$ne:"raw"}}} 
   
@@ -222,7 +228,8 @@ std::string Mongodb::get_rules_of_collection_at_a_date(const std::string & host,
 
 std::string Mongodb::get_all_batteries_of_collection(const std::string & host,
 						     int port,
-						     const std::string & collection){
+						     const std::string & collection,
+						     const std::string & db_name){
 
 
   Poco::MongoDB::Document::Ptr existDoc=new Poco::MongoDB::Document;
