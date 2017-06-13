@@ -28,6 +28,7 @@ libAlainPeters::~libAlainPeters(){
 void libAlainPeters::do_what_you_do(std::string date){
   //std::string date="2017-06-08";
   all=new Poco::JSON::Object();
+  getPriorities();
   std::vector<apeters::User> users;
   std::string collections=apeters::Mongodb::get_collections(mongo_host,mongo_port,mongo_base);  
   std::vector<std::string> vect_user=collection_to_vector(collections);
@@ -40,8 +41,9 @@ void libAlainPeters::do_what_you_do(std::string date){
     us.set_user(user_str);//vect_user[i];
     us.set_date(date);
     for(size_t j(0);j<vect_rule_list.size();++j){
+      //std::cout<<vect_rule_list[j]<<std::endl;
       std::vector<std::string> vector_streams=stream_list_to_vector(apeters::Mongodb::get_streams_of_rules_and_coll_at_a_date(mongo_host,mongo_port,user_str,vect_rule_list[j],date,mongo_base));
-      us.addrules(vect_rule_list[j],vector_streams);
+      us.addrules(vect_rule_list[j],find_prio(vect_rule_list[j]),vector_streams);
     }
     if(vect_rule_list.size()>0){
       users.push_back(us);	    
@@ -55,15 +57,30 @@ void libAlainPeters::do_what_you_do(std::string date){
   all->set("results",allarray);
   getPriorities();
 }
+std::string libAlainPeters::find_prio(std::string rule_name){
+  std::string prio="";
+  bool found=false;
+  Poco::Dynamic::Array da = *all_prio_array;
+  for(size_t i(0);i<da.size()&&!found;++i){
+    std::vector<std::string> tmp_rule=map_prio[da[i].toString()];
+    for(size_t j(0);j<tmp_rule.size();++j){
+      if(tmp_rule[j].compare(rule_name)==0){
+    	prio=da[i].toString();
+    	found=true;
+      }
+    }
+  }
+  return prio;
+}
 void libAlainPeters::getPriorities(){
-  Poco::JSON::Array::Ptr all_prio_array=new Poco::JSON::Array();
+  std::vector<std::string> vect_rule;
   apeters::File file("data/order.json");
   std::string prios=file.readFile();
   file.closeFile();
   Poco::JSON::Parser      parser;
   Poco::Dynamic::Var      str_var;
   Poco::JSON::Object::Ptr str_obj;
-
+  
   str_var = parser.parse(prios);
   str_obj = str_var.extract<Poco::JSON::Object::Ptr>();
   str_var = str_obj->get("priorities");
@@ -71,9 +88,15 @@ void libAlainPeters::getPriorities(){
   Poco::Dynamic::Array da = *all_prio_array;
   for(size_t i(0);i<da.size();++i){
     all->set(da[i],str_obj->get(da[i]));
-    //vector_collection.push_back(da[i]);
+    
+    Poco::JSON::Array::Ptr rule_array=new Poco::JSON::Array();
+    rule_array = str_obj->get(da[i]).extract<Poco::JSON::Array::Ptr>();
+    Poco::Dynamic::Array ruleAR = *rule_array;
+    for(size_t j(0);j<ruleAR.size();++j){
+      vect_rule.push_back(ruleAR[j].toString());
+    }
+    map_prio[da[i].toString()]=vect_rule;
   }
-  
   all->set("priorities",all_prio_array);
 }
 std::string libAlainPeters::getDailyReport_as_string(){

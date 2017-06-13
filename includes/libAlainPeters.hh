@@ -24,6 +24,7 @@
 #include <iostream>
 
 #include <vector>
+#include <map>
 #include <Poco/Dynamic/Var.h>
 #include <Poco/JSON/JSON.h>
 #include <Poco/JSON/Parser.h>
@@ -33,9 +34,12 @@ class libAlainPeters{
 
 private:
   Poco::JSON::Object::Ptr all=new Poco::JSON::Object();
+  Poco::JSON::Array::Ptr all_prio_array=new Poco::JSON::Array();
+  std::map<std::string,std::vector<std::string>> map_prio;
   std::vector<std::string> collection_to_vector(std::string);
   std::vector<std::string> rule_list_to_vector(std::string);
   std::vector<std::string> stream_list_to_vector(std::string);
+  std::string find_prio(std::string);
   void getPriorities();
   std::string mongo_host="mongostr";
   int mongo_port=27017;

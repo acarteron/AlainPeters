@@ -16,8 +16,7 @@ class User{
 public:
   void set_user(std::string);
   void set_date(std::string);
-  std::string define_priorities(std::string);
-  void addrules(std::string name,std::vector<std::string>);
+  void addrules(std::string,std::string,std::vector<std::string>);
   Poco::JSON::Object::Ptr getAll();
 };
 }
