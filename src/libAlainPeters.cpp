@@ -7,7 +7,7 @@
 #include "data/user.hh"
 
 libAlainPeters::libAlainPeters(){
-  apeters::File file("data/db.json");
+  apeters::File file("/opt/Sati/db.json");
   std::string db_param=file.readFile();
   file.closeFile();
   Poco::JSON::Parser      parser;
@@ -74,7 +74,7 @@ std::string libAlainPeters::find_prio(std::string rule_name){
 }
 void libAlainPeters::getPriorities(){
   std::vector<std::string> vect_rule;
-  apeters::File file("data/order.json");
+  apeters::File file("/opt/Sati/order.json");
   std::string prios=file.readFile();
   file.closeFile();
   Poco::JSON::Parser      parser;
