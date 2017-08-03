@@ -30,6 +30,11 @@ to full clean:
 TODO
 ====
 
+Link order.db to mongodb
+Propagate mongodb base
+Clear everything
+Sort rules with priorities using order.json
+
 
 DONE
 ====
