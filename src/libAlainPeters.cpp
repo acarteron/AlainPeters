@@ -20,7 +20,7 @@ libAlainPeters::libAlainPeters(){
   mongo_host=str_var.toString();
   str_var=str_obj->get("port");
   mongo_port=Utils::stringTo<int>(str_var.toString());
-  str_var=str_obj->get("name");
+  str_var=str_obj->get("streams_collection");
   mongo_base=str_var.toString();  
 }
 libAlainPeters::~libAlainPeters(){
