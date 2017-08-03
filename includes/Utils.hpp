@@ -24,23 +24,11 @@
 #include <sstream>
 #include <cmath>
 #include <vector>
+#include <algorithm>
 
 class Utils{
 private:
 public:
-  static double GetFloatPrecision(double value, double precision){
-    return (floor((value * pow(10, precision) + 0.5)) / pow(10, precision)); 
-  }
-  static std::vector<std::string> splitString(std::string str_,std::string delimiter){
-    size_t pos = 0;
-    std::vector<std::string> token;//="[";
-    while ((pos = str_.find(delimiter)) != std::string::npos) {
-      token.push_back(str_.substr(0, pos));
-      str_.erase(0, pos + delimiter.length());
-    }
-    token.push_back(str_);
-    return token;
-  }
   /** \brief A method to get current date and time as string.
    * \return Current date and time as string
    */
@@ -53,19 +41,16 @@ public:
     strftime (s_now, sizeof s_now, "%Y-%m-%d %H:%M:%S.000", &tm_now);
     return toString(s_now);
   }
-  static void display_progress(std::string message_,
-			       size_t begin_,
-			       size_t end_ ){
-    std::string display="echo -en \"\r";
-    display+=message_;
-    display+=": ";
-    display+=Utils::toString<size_t>(begin_);
-    display+="/";
-    display+=Utils::toString<size_t>(end_);
-    display+="\"";
-    std::system(display.c_str());
+  static std::string getDay(){
+    time_t now = time (NULL);
+    /* la convertir en heure locale */
+    struct tm tm_now = *localtime (&now);
+    /* Creer une chaine JJ/MM/AAAA HH:MM:SS */
+    char s_now[sizeof "AAAA-MM-JJ"];
+    strftime (s_now, sizeof s_now, "%Y-%m-%d", &tm_now);
+    return toString(s_now);
   }
-  /** \brief A method to convert any type of input in string
+    /** \brief A method to convert any type of input in string
    * \param any type of data
    * \return data given as string
    * 
@@ -120,6 +105,47 @@ public:
       }
     }
     return indic;
+  }
+  static void display_progress(std::string message_,
+			       size_t begin_,
+			       size_t end_ ){
+    std::string display="echo -en \"\r";
+    display+=message_;
+    display+=": ";
+    display+=Utils::toString<size_t>(begin_);
+    display+="/";
+    display+=Utils::toString<size_t>(end_);
+    display+="\"";
+    std::system(display.c_str());
+  }
+  static double GetFloatPrecision(double value, double precision){
+    return (floor((value * pow(10, precision) + 0.5)) / pow(10, precision)); 
+  }
+  static std::vector<std::string> splitString(std::string str_,std::string delimiter){
+    size_t pos = 0;
+    std::vector<std::string> token;//="[";
+    while ((pos = str_.find(delimiter)) != std::string::npos) {
+      token.push_back(str_.substr(0, pos));
+      str_.erase(0, pos + delimiter.length());
+    }
+    token.push_back(str_);
+    return token;
+  }
+  static std::vector<std::string> splitString(std::string str_,char delimiter){
+    size_t pos = 0;
+    std::vector<std::string> token;//="[";
+    while ((pos = str_.find(delimiter)) != std::string::npos) {
+      token.push_back(str_.substr(0, pos));
+      str_.erase(0, pos + 1);
+    }
+    token.push_back(str_);
+    return token;
+  }
+  static std::string trim(std::string& s){
+    s.erase(std::remove_if(begin(s), end(s),
+			   [l = std::locale{}](auto ch) { return std::isspace(ch, l); }
+			   ), end(s));
+    return s;
   }
 };
 
