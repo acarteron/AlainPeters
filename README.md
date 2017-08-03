@@ -30,10 +30,16 @@ to full clean:
 TODO
 ====
 
+replace Poco::JSON by nlohmann::json
+
 Link order.db to mongodb
+
 Add security to readfile if file not exists
+
 Propagate mongodb base
+
 Clear everything
+
 Sort rules with priorities using order.json
 
 
