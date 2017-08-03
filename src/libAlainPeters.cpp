@@ -21,7 +21,7 @@ libAlainPeters::libAlainPeters(){
   str_var=str_obj->get("port");
   mongo_port=Utils::stringTo<int>(str_var.toString());
   str_var=str_obj->get("streams_collection");
-  mongo_base=str_var.toString();  
+  mongo_base=str_var.toString();
 }
 libAlainPeters::~libAlainPeters(){
 }
@@ -55,7 +55,7 @@ void libAlainPeters::do_what_you_do(std::string date){
   }
   all->set("date",date);
   all->set("results",allarray);
-  getPriorities();
+  //getPriorities();
 }
 std::string libAlainPeters::find_prio(std::string rule_name){
   std::string prio="";
