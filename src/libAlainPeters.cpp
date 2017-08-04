@@ -16,9 +16,9 @@ libAlainPeters::libAlainPeters(){
   
   str_var = parser.parse(db_param);
   str_obj = str_var.extract<Poco::JSON::Object::Ptr>();
-  str_var = str_obj->get("host");
+  str_var = str_obj->get("mongo_host");
   mongo_host=str_var.toString();
-  str_var=str_obj->get("port");
+  str_var=str_obj->get("mongo_port");
   mongo_port=Utils::stringTo<int>(str_var.toString());
   str_var=str_obj->get("streams_collection");
   mongo_base=str_var.toString();
