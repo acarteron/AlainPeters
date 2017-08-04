@@ -10,38 +10,31 @@ libAlainPeters::libAlainPeters(){
   apeters::File file("/opt/Sati/db.json");
   std::string db_param=file.readFile();
   file.closeFile();
-  Poco::JSON::Parser      parser;
-  Poco::Dynamic::Var      str_var;
-  Poco::JSON::Object::Ptr str_obj;
-  
-  str_var = parser.parse(db_param);
-  str_obj = str_var.extract<Poco::JSON::Object::Ptr>();
-  str_var = str_obj->get("mongo_host");
-  mongo_host=str_var.toString();
-  str_var=str_obj->get("mongo_port");
-  mongo_port=Utils::stringTo<int>(str_var.toString());
-  str_var=str_obj->get("streams_collection");
-  mongo_base=str_var.toString();
+
+  nlohmann::json j=nlohmann::json::parse(db_param);
+  mongo_host=j["mongo_host"].get<std::string>();
+  mongo_port=j["mongo_port"].get<int>();
+  mongo_base=j["streams_collection"].get<std::string>();
 }
 libAlainPeters::~libAlainPeters(){
 }
 void libAlainPeters::do_what_you_do(std::string date){
   //std::string date="2017-06-08";
-  all=new Poco::JSON::Object();
   getPriorities();
+  //std::cout<<"all: "<<all<<std::endl;
   std::vector<apeters::User> users;
   std::string collections=apeters::Mongodb::get_collections(mongo_host,mongo_port,mongo_base);  
   std::vector<std::string> vect_user=collection_to_vector(collections);
   for(size_t i(0);i<vect_user.size();++i){
     std::string user_str=vect_user[i];//"_DomassistTeynie";
     std::string rules_list=apeters::Mongodb::get_rules_of_collection_at_a_date(mongo_host,mongo_port,user_str,date,mongo_base);
-    //std::cout<<rules_list<<std::endl;
+  //   //std::cout<<rules_list<<std::endl;
     std::vector<std::string> vect_rule_list=rule_list_to_vector(rules_list);
     apeters::User us;
     us.set_user(user_str);//vect_user[i];
     us.set_date(date);
     for(size_t j(0);j<vect_rule_list.size();++j){
-      //std::cout<<vect_rule_list[j]<<std::endl;
+  //     //std::cout<<vect_rule_list[j]<<std::endl;
       std::vector<std::string> vector_streams=stream_list_to_vector(apeters::Mongodb::get_streams_of_rules_and_coll_at_a_date(mongo_host,mongo_port,user_str,vect_rule_list[j],date,mongo_base));
       us.addrules(vect_rule_list[j],find_prio(vect_rule_list[j]),vector_streams);
     }
@@ -49,27 +42,31 @@ void libAlainPeters::do_what_you_do(std::string date){
       users.push_back(us);	    
     }  
   }
-  Poco::JSON::Array::Ptr allarray=new Poco::JSON::Array();
-  for(size_t i(0);i<users.size();++i){
-    allarray->add(users[i].getAll());
+  std::string allarray="[";
+  for(size_t i(0);i<users.size()-1;++i){
+    //std::cout<<users[i].getAll()->dump()<<std::endl;
+    allarray+=users[i].getAll()->dump()+",";
   }
-  all->set("date",date);
-  all->set("results",allarray);
-  //getPriorities();
+  allarray+=users[users.size()-1].getAll()->dump()+"]";
+  all["date"]=date;
+  all["results"]=nlohmann::json::parse(allarray);
+  // //getPriorities();
 }
 std::string libAlainPeters::find_prio(std::string rule_name){
   std::string prio="";
   bool found=false;
-  Poco::Dynamic::Array da = *all_prio_array;
-  for(size_t i(0);i<da.size()&&!found;++i){
-    std::vector<std::string> tmp_rule=map_prio[da[i].toString()];
+  for (nlohmann::json::iterator it = all_prio_array.begin();
+       it != all_prio_array.end()&&!found;
+       ++it) {
+    std::vector<std::string> tmp_rule=map_prio[it.value().get<std::string>()];
     for(size_t j(0);j<tmp_rule.size();++j){
       if(tmp_rule[j].compare(rule_name)==0){
-    	prio=da[i].toString();
-    	found=true;
+	prio=it.value().get<std::string>();
+	found=true;
       }
     }
   }
+  //std::cout<<"rule: "<<rule_name<<" prio "<< prio <<std::endl;
   return prio;
 }
 void libAlainPeters::getPriorities(){
@@ -77,86 +74,58 @@ void libAlainPeters::getPriorities(){
   apeters::File file("/opt/Sati/order.json");
   std::string prios=file.readFile();
   file.closeFile();
-  Poco::JSON::Parser      parser;
-  Poco::Dynamic::Var      str_var;
-  Poco::JSON::Object::Ptr str_obj;
-  
-  str_var = parser.parse(prios);
-  str_obj = str_var.extract<Poco::JSON::Object::Ptr>();
-  str_var = str_obj->get("priorities");
-  all_prio_array = str_var.extract<Poco::JSON::Array::Ptr>();
-  Poco::Dynamic::Array da = *all_prio_array;
-  for(size_t i(0);i<da.size();++i){
-    all->set(da[i],str_obj->get(da[i]));
-    
-    Poco::JSON::Array::Ptr rule_array=new Poco::JSON::Array();
-    rule_array = str_obj->get(da[i]).extract<Poco::JSON::Array::Ptr>();
-    Poco::Dynamic::Array ruleAR = *rule_array;
-    for(size_t j(0);j<ruleAR.size();++j){
-      vect_rule.push_back(ruleAR[j].toString());
+  nlohmann::json j=nlohmann::json::parse(prios);
+  //std::cout<<j["priorities"]<<std::endl;
+  all_prio_array = j["priorities"];
+  for (nlohmann::json::iterator it = j["priorities"].begin();
+       it != j["priorities"].end();
+       ++it) {
+    all[it.value().get<std::string>()]=j[it.value().get<std::string>()];
+    for (nlohmann::json::iterator it_r = j[it.value().get<std::string>()].begin();
+	 it_r != j[it.value().get<std::string>()].end();
+	 ++it_r) {
+      vect_rule.push_back(it_r.value().get<std::string>());
     }
-    map_prio[da[i].toString()]=vect_rule;
+    map_prio[it.value().get<std::string>()]=vect_rule;
   }
-  all->set("priorities",all_prio_array);
+  all["priorities"]=j["priorities"];
 }
 std::string libAlainPeters::getDailyReport_as_string(){
-  std::ostringstream  out;
-  all->stringify(out,0);
-  return out.str();
+  return all.dump();
 }
-Poco::JSON::Object::Ptr libAlainPeters::getDailyReport_as_json_object(){
-  return all;
-}
+// // Poco::JSON::Object::Ptr libAlainPeters::getDailyReport_as_json_object(){
+// //   return all;
+// // }
 
 
 std::vector<std::string> libAlainPeters::collection_to_vector(std::string collection){
-  Poco::JSON::Parser      parser;
-  Poco::Dynamic::Var      str_var;
-  Poco::JSON::Array::Ptr  collection_array;
   std::vector<std::string> vector_collection;
-  
-  str_var = parser.parse(collection);
-  parser.reset();
-  collection_array = str_var.extract<Poco::JSON::Array::Ptr>();
-  Poco::Dynamic::Array da = *collection_array;
-  for(size_t i(0);i<da.size();++i){
-    vector_collection.push_back(da[i]);
+  nlohmann::json j=nlohmann::json::parse(collection);
+  for (nlohmann::json::iterator it = j.begin();it != j.end();++it) {
+    vector_collection.push_back(it.value().get<std::string>());
   }
   sort(vector_collection.begin(), vector_collection.end());
   return vector_collection;
 }
 std::vector<std::string> libAlainPeters::rule_list_to_vector(std::string rule_list){
-  Poco::JSON::Parser      parser;
-  Poco::Dynamic::Var      str_var;
-  Poco::JSON::Object::Ptr str_obj;
-  Poco::JSON::Array::Ptr  rule_list_array;
   std::vector<std::string> vector_rules;
-  
-  str_var = parser.parse(rule_list);
-  parser.reset();
-  str_obj = str_var.extract<Poco::JSON::Object::Ptr>();
-  str_var = str_obj->get("values");
-  rule_list_array = str_var.extract<Poco::JSON::Array::Ptr>();
-  
-  Poco::Dynamic::Array da = *rule_list_array;
-  for(size_t i(0);i<da.size();++i){
-    vector_rules.push_back(da[i]);
+  nlohmann::json j=nlohmann::json::parse(rule_list);
+  //std::cout<<j<<std::endl;
+  for (nlohmann::json::iterator it = j["values"].begin();
+       it != j["values"].end();
+       ++it) {
+    vector_rules.push_back(it.value().get<std::string>());
   }
   sort(vector_rules.begin(), vector_rules.end());
   return vector_rules;
 }
 std::vector<std::string> libAlainPeters::stream_list_to_vector(std::string stream_list){
-  Poco::JSON::Parser      parser;
-  Poco::Dynamic::Var      str_var;
-  Poco::JSON::Array::Ptr  rule_list_array;
   std::vector<std::string> vector_streams;
-  
-  str_var = parser.parse(stream_list);
-  parser.reset();
-  rule_list_array = str_var.extract<Poco::JSON::Array::Ptr>();
-  Poco::Dynamic::Array da = *rule_list_array;
-  for(size_t i(0);i<da.size();++i){
-    vector_streams.push_back(da[i]);
+
+  nlohmann::json j=nlohmann::json::parse(stream_list);
+  //std::cout<<j<<std::endl;
+  for (nlohmann::json::iterator it = j.begin();it != j.end(); ++it) {
+    vector_streams.push_back(it.value().dump());
   }
   return vector_streams;
 }

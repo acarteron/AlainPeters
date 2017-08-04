@@ -1,10 +1,10 @@
 #include <iostream>
 #include "libAlainPeters.hh"
 int main(int argc, char** argv){
-  std::string date="2017-06-08";
+  std::string date="2017-08-03";
   libAlainPeters liba;
   liba.do_what_you_do(date);
-  
+  std::cout<<"Daily Report:"<<std::endl;
   std::cout<<liba.getDailyReport_as_string()<<std::endl;
 }
 /** \mainpage : 

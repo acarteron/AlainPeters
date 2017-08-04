@@ -1,33 +1,34 @@
 #include "data/user.hh"
+#include <iostream>
 namespace apeters{
   void User::set_user(std::string user_){
     user=user_;
-    user_obj->set("user",user);
+    user_obj["user"]=user;
   }
   void User::set_date(std::string date_){
     date=date_;
   }
-  void User::addrules(std::string name,std::string prio,std::vector<std::string> streams){
-    //std::string prio=define_priorities(name);
+  void User::addrules(std::string name,
+		      std::string prio,
+		      std::vector<std::string> streams){
     if(prio.compare("")!=0){
       Rule rul;
       rul.set_streams(name,streams);
-      if(priorities.count(prio)==0)
-	priorities[prio]=new Poco::JSON::Object();
-      priorities[prio]->set(name,rul.get_rules_object());
+      priorities[prio][name]=nlohmann::json::parse(rul.get_rules_object()->dump());
     }
   }
-  Poco::JSON::Object::Ptr User::getAll(){
-    Poco::JSON::Array::Ptr  prio_array=new Poco::JSON::Array();
-    std::string theend="{\"user\":\""+user+"\"";
-    for(std::map<std::string,Poco::JSON::Object::Ptr>::iterator it = priorities.begin();it != priorities.end(); it++) {
-      prio_array->add(it->first);
-      Poco::Dynamic::Var rules_var;
-      std::ostringstream  out;
-      it->second->stringify(out,0);
-      user_obj->set(it->first,it->second);
+  std::shared_ptr<nlohmann::json> User::getAll(){
+    std::string arr="[";
+    std::vector<std::string> arr_tmp;
+    for(std::map<std::string,nlohmann::json>::iterator it = priorities.begin();it != priorities.end(); it++) {
+      arr_tmp.push_back(it->first);
+      user_obj[it->first]=it->second;
     }
-    user_obj->set("priorities",prio_array);
-    return user_obj;
+    for(size_t i(0);i<arr_tmp.size()-1;++i){
+      arr+="\""+arr_tmp[i]+"\",";
+    }
+    arr+="\""+arr_tmp[arr_tmp.size()-1]+"\"]";
+    user_obj["priorities"]=nlohmann::json::parse(arr);
+    return std::make_shared<nlohmann::json>(user_obj);
   }
 }

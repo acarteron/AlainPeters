@@ -22,19 +22,15 @@
 #define LIBALAINPETERS_HH
 
 #include <iostream>
-
 #include <vector>
 #include <map>
-#include <Poco/Dynamic/Var.h>
-#include <Poco/JSON/JSON.h>
-#include <Poco/JSON/Parser.h>
-#include <Poco/JSON/Array.h>
+#include "data/Utils.hpp"
 
 class libAlainPeters{
 
 private:
-  Poco::JSON::Object::Ptr all=new Poco::JSON::Object();
-  Poco::JSON::Array::Ptr all_prio_array=new Poco::JSON::Array();
+  nlohmann::json  all;
+  nlohmann::json  all_prio_array;
   std::map<std::string,std::vector<std::string>> map_prio;
   std::vector<std::string> collection_to_vector(std::string);
   std::vector<std::string> rule_list_to_vector(std::string);
@@ -60,7 +56,7 @@ public:
   
   void do_what_you_do(std::string);
   std::string getDailyReport_as_string();
-  Poco::JSON::Object::Ptr getDailyReport_as_json_object();
+  //Poco::JSON::Object::Ptr getDailyReport_as_json_object();
 
 };
 

@@ -2,14 +2,13 @@
 #define ROLE_HH
 
 #include <string>
-#include <Poco/Dynamic/Var.h>
-#include <Poco/JSON/JSON.h>
-#include <Poco/JSON/Parser.h>
-#include <Poco/JSON/Array.h>
+#include <memory>
+#include "data/Utils.hpp"
+
 namespace apeters{
   class Role {
   private:
-    Poco::JSON::Object::Ptr role_obj=new Poco::JSON::Object();
+    nlohmann::json role_obj;
     std::string location="";
     std::string kind="";
   public:
@@ -17,7 +16,7 @@ namespace apeters{
     std::string getKind()const ;
     void define_role(std::string);
     std::string to_string();
-    Poco::JSON::Object::Ptr get_role_obj();
+    std::shared_ptr<nlohmann::json> get_role_obj();
   };
 }
 #endif // ROLE_HH

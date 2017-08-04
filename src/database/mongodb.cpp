@@ -10,10 +10,8 @@
 #include <Poco/MongoDB/Array.h>
 #include <Poco/MongoDB/Element.h>
 
-#include <Poco/Dynamic/Var.h>
-#include <Poco/JSON/JSON.h>
-#include <Poco/JSON/Parser.h>
-#include <Poco/JSON/Array.h>
+#include <nlohmann/json.hpp>
+//#include <json.hpp>
 
 #include <iostream>
 
@@ -26,13 +24,6 @@ namespace apeters{
   std::string Mongodb::get_collections(const std::string & host,
 				       int port,
 				       const std::string & db_name){
-    Poco::JSON::Parser      parser;
-    Poco::Dynamic::Var      str_var;
-    Poco::JSON::Object::Ptr str_obj;
-    Poco::Dynamic::Var      cursor_var;
-    Poco::Dynamic::Var      batch_var;
-    Poco::JSON::Array::Ptr  collection_array;
-  
     Poco::MongoDB::Connection connection(host, port);
     Poco::MongoDB::Database db(db_name);
     Poco::SharedPtr<Poco::MongoDB::QueryRequest> command = db.createCommand();
@@ -41,20 +32,16 @@ namespace apeters{
     Poco::MongoDB::ResponseMessage response;
     connection.sendRequest(*command, response);
     if (response.hasDocuments()){
-      str_var = parser.parse(response.documents()[0]->toString());
-      parser.reset();
-      str_obj = str_var.extract<Poco::JSON::Object::Ptr>();
-      cursor_var= str_obj->get("cursor");
-      str_obj = cursor_var.extract<Poco::JSON::Object::Ptr>();
-      batch_var= str_obj->get("firstBatch");
-      collection_array = batch_var.extract<Poco::JSON::Array::Ptr>();
-
-      Poco::Dynamic::Array da = *collection_array;
-      for(size_t i(0);i<da.size();++i){
-	result+="\""+(da[i]["name"]).convert<std::string>()+"\"";
-	if(i<da.size()-1)
-	  result+=",";
+      nlohmann::json j=nlohmann::json::parse(response.documents()[0]->toString());
+      std::vector<std::string> res_int;  
+      for (nlohmann::json::iterator it = j["cursor"]["firstBatch"].begin();
+	   it != j["cursor"]["firstBatch"].end(); ++it) {
+	res_int.push_back((*it)["name"].get<std::string>());
       }
+      for(size_t i(0);i<res_int.size()-1;++i){
+	result+="\""+res_int[i]+"\",";
+      }
+      result+="\""+res_int[res_int.size()-1]+"\"";
     }
     result+="]";
     return result;
