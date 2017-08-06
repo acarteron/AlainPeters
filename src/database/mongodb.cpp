@@ -47,6 +47,56 @@ namespace apeters{
     return result;
   }
 
+  int Mongodb::remove_rules(const std::string & host,
+			    int port,
+			    const std::string & collection,
+			    const std::string & db_name,
+			    const std::string & rule_name){
+    Poco::MongoDB::Connection connection(host, port);
+    try{
+      Poco::MongoDB::Database db(db_name);
+      Poco::SharedPtr<Poco::MongoDB::DeleteRequest> deleteRuleRequest = db.createDeleteRequest(collection);
+      deleteRuleRequest->selector().add("name", rule_name);
+      connection.sendRequest(*deleteRuleRequest);
+      std::string lastError = db.getLastError(connection);
+      if (!lastError.empty()){
+	std::cout << "Last Error: " << db.getLastError(connection) << std::endl;
+	return -2;
+      }
+      return 0;
+    }
+    catch (Poco::Exception& exc){
+      std::cerr << exc.displayText() << std::endl;
+      return -1;
+    }
+  }
+  
+  std::string Mongodb::get_rules(const std::string & host,
+				 int port,
+				 const std::string & collection,
+				 const std::string & db_name){
+    std::string result="[";
+    Poco::MongoDB::Connection connection(host, port);
+    Poco::MongoDB::Cursor cursor(db_name, collection);
+    cursor.query().returnFieldSelector().add("name", 1);
+    cursor.query().returnFieldSelector().add("expressions", 1);
+    cursor.query().returnFieldSelector().add("_id", 0);
+    Poco::MongoDB::ResponseMessage& response = cursor.next(connection);
+    for (;;){
+      for (Poco::MongoDB::Document::Vector::const_iterator it = response.documents().begin(); it != response.documents().end(); ++it){
+	result+=(*it)->toString();
+	result+=",";
+      }
+      if (response.cursorID() == 0){
+	break;
+      }
+      response = cursor.next(connection);
+    };
+    result=result.substr(0,result.size()-1);
+    result+="]";
+    return result;
+  }
+  
   std::string Mongodb::get_streams(const std::string & host,
 				   int port,
 				   const std::string & collection,

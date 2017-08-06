@@ -42,6 +42,12 @@ namespace apeters{
      */
     Mongodb();
 
+    static int remove_rules(const std::string &,
+			    int,
+			    const std::string &,
+			    const std::string &,
+			    const std::string &);
+    
     static std::string get_collections(const std::string &,
 				       int,
 				       const std::string &);
@@ -49,6 +55,10 @@ namespace apeters{
 				   int,
 				   const std::string &,
 				   const std::string &);
+    static std::string get_rules(const std::string &,
+				 int,
+				 const std::string &,
+				 const std::string &);
     static std::string get_streams_of_rules_and_coll(const std::string &,
 						     int,
 						     const std::string &,
