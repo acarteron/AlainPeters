@@ -33,7 +33,7 @@ void libAlainPeters::do_what_you_do(std::string date){
     apeters::User us;
     us.set_user(user_str);//vect_user[i];
     us.set_date(date);
-    std::cout<<"vect rule size "<<vect_rule_list.size()<<std::endl;
+    //std::cout<<"vect rule size "<<vect_rule_list.size()<<std::endl;
     for(size_t j(0);j<vect_rule_list.size();++j){
       //std::cout<<vect_rule_list[j]<<std::endl;
       std::vector<std::string> vector_streams=stream_list_to_vector(apeters::Mongodb::get_streams_of_rules_and_coll_at_a_date(mongo_host,mongo_port,user_str,vect_rule_list[j],date,mongo_base));
