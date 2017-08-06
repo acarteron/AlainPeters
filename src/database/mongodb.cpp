@@ -92,7 +92,8 @@ namespace apeters{
       }
       response = cursor.next(connection);
     };
-    result=result.substr(0,result.size()-1);
+    if(result.compare("[")!=0)
+      result=result.substr(0,result.size()-1);
     result+="]";
     return result;
   }
@@ -126,7 +127,8 @@ namespace apeters{
       // Get the next bunch of documents
       response = cursor.next(connection);
     };
-    result=result.substr(0,result.size()-1);
+    if(result.compare("[")!=0)
+      result=result.substr(0,result.size()-1);
     result+="]";
     //std::cout<<result<<std::endl;
     return result;
