@@ -33,15 +33,17 @@ namespace apeters{
     connection.sendRequest(*command, response);
     if (response.hasDocuments()){
       nlohmann::json j=nlohmann::json::parse(response.documents()[0]->toString());
-      std::vector<std::string> res_int;  
+      std::vector<std::string> res_int;
       for (nlohmann::json::iterator it = j["cursor"]["firstBatch"].begin();
 	   it != j["cursor"]["firstBatch"].end(); ++it) {
 	res_int.push_back((*it)["name"].get<std::string>());
       }
-      for(size_t i(0);i<res_int.size()-1;++i){
-	result+="\""+res_int[i]+"\",";
+      if(res_int.size()>0){
+	for(size_t i(0);i<res_int.size()-1;++i){
+	  result+="\""+res_int[i]+"\",";
+	}      
+	result+="\""+res_int[res_int.size()-1]+"\"";
       }
-      result+="\""+res_int[res_int.size()-1]+"\"";
     }
     result+="]";
     return result;
