@@ -24,10 +24,13 @@ namespace apeters{
       arr_tmp.push_back(it->first);
       user_obj[it->first]=it->second;
     }
-    for(size_t i(0);i<arr_tmp.size()-1;++i){
-      arr+="\""+arr_tmp[i]+"\",";
+    if(arr_tmp.size()>0){
+      for(size_t i(0);i<arr_tmp.size()-1;++i){
+	arr+="\""+arr_tmp[i]+"\",";
+      }
+      arr+="\""+arr_tmp[arr_tmp.size()-1]+"\"";
     }
-    arr+="\""+arr_tmp[arr_tmp.size()-1]+"\"]";
+    arr+="]";
     user_obj["priorities"]=nlohmann::json::parse(arr);
     return std::make_shared<nlohmann::json>(user_obj);
   }
