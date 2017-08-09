@@ -24,8 +24,7 @@
 //#include "data/streamevent.hh"
 
 #include <vector>
-#include <Poco/MongoDB/Document.h>
-
+#include <string>
 namespace apeters{
 
   class Mongodb{
