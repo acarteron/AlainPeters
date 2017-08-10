@@ -7,7 +7,7 @@
 #include "data/user.hh"
 
 libAlainPeters::libAlainPeters(){
-  apeters::File file("/opt/Sati_test/db.json");
+  apeters::File file("/opt/Sati/db.json");
   std::string db_param=file.readFile();
   file.closeFile();
 
