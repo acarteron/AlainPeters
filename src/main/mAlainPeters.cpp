@@ -1,11 +1,21 @@
 #include <iostream>
 #include "libAlainPeters.hh"
+
+#include "database/mongodb.hh"
 int main(int argc, char** argv){
-  std::string date="2017-08-03";
+  /*	std::cout<<apeters::Mongodb::get_collections("172.18.0.2",27017,"Streams")<<std::endl;
+	apeters::Mongodb::remove_rules("172.18.0.2",27017,"global","rules","breakfast");
+	std::cout<<apeters::Mongodb::get_rules("172.18.0.2",27017,"global","rules")<<std::endl;
+	std::cout<<apeters::Mongodb::get_streams("172.18.0.2",27017,"_DomassistLafon","Streams")<<std::endl;
+	std::cout<<"get rule collection "<<apeters::Mongodb::get_rules_of_collection("172.18.0.2",27017,"_DomassistLafon","Streams")<<std::endl;
+	std::cout<<"get stream date "<<apeters::Mongodb::get_streams_of_rules_and_coll_at_a_date("172.18.0.2",27017,"_DomassistLafon","DoorAlert","2017-08-10","Streams")<<std::endl;
+	std::cout<<"get rule collection date "<<apeters::Mongodb::get_rules_of_collection_at_a_date("172.18.0.2",27017,"_DomassistLafon","2017-08-10","Streams")<<std::endl;*/
+  std::string date="2017-08-10";
   libAlainPeters liba;
   liba.do_what_you_do(date);
   std::cout<<"Daily Report:"<<std::endl;
   std::cout<<liba.getDailyReport_as_string()<<std::endl;
+	
 }
 /** \mainpage : 
  * \author adcarter

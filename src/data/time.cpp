@@ -25,7 +25,7 @@ Time::Time(std::time_t timestmp_){
   to_timestamp();
   msec=0;
 }
-Time::Time(unsigned long timestamp_){
+Time::Time(long long timestamp_){
   msec=timestamp_%1000;
   time_t timestmp_=timestamp_/1000;
   timestmp=*std::localtime(&timestmp_);
@@ -33,10 +33,10 @@ Time::Time(unsigned long timestamp_){
 }
 Time::~Time(){
 }
-unsigned long Time::get_timestamp(){
+long long Time::get_timestamp(){
   return timestamp;
 }
-unsigned long Time::get_timestamp_ms(){
+long long Time::get_timestamp_ms(){
   return timestamp*1000+msec;
 }
 
@@ -76,12 +76,12 @@ Time& Time::affect(const Time& time){
   return *this;
 }
 
-unsigned long Time::minus(const Time& a){
+long long Time::minus(const Time& a){
   if(timestamp>a.timestamp)
     return (timestamp-a.timestamp);
   else return (a.timestamp-timestamp);
 }
-unsigned long Time::minus_day_(const Time& a){
+long long Time::minus_day_(const Time& a){
   if(timestamp>a.timestamp)
     return (timestamp-a.timestamp)/3600/24;
   else
@@ -102,8 +102,8 @@ void Time::parse(std::string time_full){
   if(finsec==std::string::npos){
     msec=0;
   }else{
-    msec=Utils::stringTo<unsigned int>(time_full.substr(finsec,
-							time_full.size()-finsec));
+    msec=Utils::stringTo<int>(time_full.substr(finsec,
+					       time_full.size()-finsec));
   }
   timestmp.tm_isdst=-1;
   to_timestamp();  
@@ -113,14 +113,14 @@ void Time::parse(std::string days,std::string times){
   days.append(times);
   parse(days);
 }
-unsigned long Time::get_daily_timestamp(){
+long long Time::get_daily_timestamp(){
   return dailytimstmp;
 }
-unsigned long Time::get_day_as_timestamp(){
+long long Time::get_day_as_timestamp(){
   Time time_(get_day_str(),"00:00:00.000");
   return time_.get_timestamp_ms();
 }
-std::string Time::to_string(unsigned int changer)const{
+std::string Time::to_string(int changer)const{
   std::string out="";
   switch(changer){
   case 0:
@@ -129,17 +129,17 @@ std::string Time::to_string(unsigned int changer)const{
     out+=get_hour_str();
     break;
   case 1:
-    out=Utils::toString<unsigned long>(timestamp);
+    out=Utils::toString<long long>(timestamp);
     break;
   default:
-    out=Utils::toString<unsigned long>(timestamp*1000+msec);
+    out=Utils::toString<long long>(timestamp*1000+msec);
     break;
   }
   return out;
 }
 
 std::string Time::to_string()const {
-  std::string out=Utils::toString<unsigned long>(timestamp*1000+msec);
+  std::string out=Utils::toString<long long>(timestamp*1000+msec);
   return out;
 }
 std::string Time::get_day_str() const{
@@ -177,7 +177,7 @@ Time& Time::operator=(std::string time_full){
   const Time a(time_full);
   return affect(a);
 }
-unsigned long Time::operator-(const Time& a){
+long long Time::operator-(const Time& a){
   return minus(a);
 }
 

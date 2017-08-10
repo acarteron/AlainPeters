@@ -28,9 +28,9 @@
 class Time{
 
 private:
-  unsigned int msec;
-  unsigned long timestamp;
-  unsigned long dailytimstmp;
+  int msec;
+  long long timestamp;
+  long long dailytimstmp;
 
   std::tm timestmp;
  
@@ -44,8 +44,8 @@ private:
   bool less_equal(const Time&);
   Time& affect(const Time &);
 
-  unsigned long plus(const Time&);
-  unsigned long minus(const Time&);
+  long long plus(const Time&);
+  long long minus(const Time&);
 
   void to_timestamp();
   void to_time();
@@ -60,7 +60,7 @@ public:
   Time(std::string );
   Time(std::string ,std::string);
   Time(std::time_t);
-  Time(unsigned long);
+  Time(long long);
   /** \brief Destructor
    * 
    * add desc
@@ -68,13 +68,13 @@ public:
    */
   ~Time();
 
-  unsigned long get_timestamp();
-  unsigned long get_timestamp_ms();
-  unsigned long get_daily_timestamp();
-  unsigned long get_day_as_timestamp();
+  long long get_timestamp();
+  long long get_timestamp_ms();
+  long long get_daily_timestamp();
+  long long get_day_as_timestamp();
   
   std::string to_string()const;
-  std::string to_string(unsigned int)const;
+  std::string to_string(int)const;
 
   
   bool operator>(const Time& );
@@ -84,15 +84,15 @@ public:
   bool operator<=(const Time& );
   Time& operator=(const Time& );
   Time& operator=(std::string );
-  unsigned long operator+(const Time& );
-  unsigned long operator-(const Time& );
+  long long operator+(const Time& );
+  long long operator-(const Time& );
   Time& operator+=(const Time& );
   Time& operator-=(const Time& );
 
   bool is_null();
   bool is_null(Time&);
   
-  unsigned long minus_day_(const Time& );
+  long long minus_day_(const Time& );
  
   int date_compare(const Time&);
   

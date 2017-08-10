@@ -13,10 +13,13 @@ namespace apeters{
     for(size_t i(0);i<streams.size();++i){
       std::vector<std::string> tmp_stream;
       Rule_Instance rul;
+      //std::cout<<"lol"<<std::endl;
       nlohmann::json j=nlohmann::json::parse(streams[i]);
-      std::string timestamp=Utils::toString<long>(j["timestamp"].get<long>());
+      //std::cout<<"std"<<std::endl;
+      std::string timestamp=j["timestamp"]["$numberLong"].get<std::string>();
       for (nlohmann::json::iterator it = j["events"].begin();
 	   it != j["events"].end(); ++it) {
+	//std::cout<<*it<<std::endl;
 	tmp_stream.push_back(it.value().dump());
       }
       rul.set_roles(timestamp,tmp_stream);

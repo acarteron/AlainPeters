@@ -1,3 +1,4 @@
+
 #include "database/mongodb.hh"
 #include "data/Utils.hpp"
 #include "data/time.hh"
@@ -31,6 +32,8 @@ namespace apeters{
     std::vector<std::string> res_int;
 
     std::string err_msg;
+    mongo::BSONObj info;
+			 
     mongo::DBClientConnection c;
     mongo::HostAndPort handp(host, port);
     c.connect(handp,err_msg);
@@ -46,6 +49,7 @@ namespace apeters{
       result+="\""+res_int[res_int.size()-1]+"\"";
     }
     result+="]";
+    c.logout(db_name,info);
     return result;
     //std::shared_ptr<mongo::DBClientCursor> cursor = c.query(db_name, MONGO_QUERY("listCollections" << "1"));
 
@@ -59,12 +63,14 @@ namespace apeters{
 			    const std::string & db_name,
 			    const std::string & rule_name){
     std::string err_msg;
+    mongo::BSONObj info;
     mongo::DBClientConnection c;
     mongo::BSONObjBuilder req_build;
     mongo::HostAndPort handp(host, port);
     c.connect(handp,err_msg);
     req_build.append("name",rule_name);
     c.remove(db_name+"."+collection,mongo::Query(req_build.obj()));
+    c.logout(db_name,info);
     return 0;
   }
   
@@ -74,6 +80,7 @@ namespace apeters{
 				 const std::string & db_name){
     std::string result="[";
     std::string err_msg;
+    mongo::BSONObj info;
     mongo::DBClientConnection c;
     mongo::HostAndPort handp(host, port);
     c.connect(handp,err_msg);
@@ -86,6 +93,7 @@ namespace apeters{
     if(result.find_last_of(",")==result.size()-1){
       result=result.substr(0,result.size()-1);
     }
+    c.logout(db_name,info);
     result+="]";
     return result;
   }
@@ -96,6 +104,7 @@ namespace apeters{
 				   const std::string & db_name){
     std::string result="[";
     std::string err_msg;
+    mongo::BSONObj info;
     mongo::DBClientConnection c;
     mongo::HostAndPort handp(host, port);
     c.connect(handp,err_msg);
@@ -108,6 +117,7 @@ namespace apeters{
     if(result.find_last_of(",")==result.size()-1){
       result=result.substr(0,result.size()-1);
     }
+    c.logout(db_name,info);
     result+="]"; 
     // if(result.compare("[")!=0)
     //   result=result.substr(0,result.size()-1);
@@ -151,6 +161,7 @@ namespace apeters{
     mongo::BSONObj info;
     c.runCommand(db_name,req,info,0);
     result=info.jsonString();
+    c.logout(db_name,info);
     //std::cout<<result<<std::endl;
     return result;
   }
@@ -161,10 +172,14 @@ namespace apeters{
 							       const std::string &date,
 							       const std::string & db_name){
     std::string result="[";
+    //std::cout<<date<<std::endl;
     Time time_1(date,"00:00:00.000");
-    long long timestamp=time_1.get_timestamp_ms();
+    long long timestamp=(long long)time_1.get_timestamp_ms();
     long long timestamp2=timestamp+86400000;
+    //std::cout<<timestamp<<" "<<timestamp2<<" "<<time_1.get_timestamp_ms()<<std::endl;
+    
     std::string err_msg;
+    mongo::BSONObj info;
     mongo::DBClientConnection c;
     mongo::HostAndPort handp(host, port);
     c.connect(handp,err_msg);
@@ -181,6 +196,7 @@ namespace apeters{
     if(result.find_last_of(",")==result.size()-1){
       result=result.substr(0,result.size()-1);
     }
+    c.logout(db_name,info);
     result+="]"; 
     return result;
   }
@@ -194,10 +210,13 @@ namespace apeters{
   
     //{ find:"_DomassistSzelengowicz",filter:{'timestamp':{$gt:1496872800000,$lt:1495522970170000},'rule':{$ne:"raw"}}}
     std::string result="[";
+    //std::cout<<date<<std::endl;
     Time time_1(date,"00:00:00.000");
     long long timestamp=time_1.get_timestamp_ms();
     long long timestamp2=timestamp+86400000;
+    //std::cout<<timestamp<<" "<<timestamp2<<std::endl;
     mongo::BSONObjBuilder req_time;
+    mongo::BSONObj info;
     req_time.append("$gte",timestamp);
     req_time.append("$lt",timestamp2);
     mongo::BSONObjBuilder req_;
@@ -207,9 +226,21 @@ namespace apeters{
     mongo::HostAndPort handp(host, port);
     c.connect(handp,err_msg);
     mongo::BSONObj req = BSON("distinct" << collection << "key" << "rule" << "query" << req_.obj());
-    mongo::BSONObj info;
+    //std::cout<<req.jsonString()<<std::endl;
+    //mongo::BSONObj info;
     c.runCommand(db_name,req,info,0);
+
+    // std::shared_ptr<mongo::DBClientCursor> cursor_ =
+    //   c.query(db_name+"."+collection,MONGO_QUERY("key" << "rule" << "timestamp" << req_time.obj() << "distinct" << collection ) /*mongo::BSONObj()*/);
+    // while (cursor_->more()){
+    //   //result+=
+    //   std::cout<<"lololil "<<cursor_->next().jsonString()<<std::endl;
+    //   //result+=",";
+    // }
     result=info.jsonString();
+    c.logout(db_name,info);
+    
+    //std::cout<<result<<std::endl;
     return result;
   }
 

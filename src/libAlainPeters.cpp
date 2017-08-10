@@ -7,7 +7,7 @@
 #include "data/user.hh"
 
 libAlainPeters::libAlainPeters(){
-  apeters::File file("/opt/Sati/db.json");
+  apeters::File file("/opt/Sati_test/db.json");
   std::string db_param=file.readFile();
   file.closeFile();
 
@@ -27,6 +27,7 @@ void libAlainPeters::do_what_you_do(std::string date){
   std::vector<std::string> vect_user=collection_to_vector(collections);
   for(size_t i(0);i<vect_user.size();++i){
     std::string user_str=vect_user[i];//"_DomassistTeynie";
+    //std::cout<<user_str<<" "<<date<<std::endl;
     std::string rules_list=apeters::Mongodb::get_rules_of_collection_at_a_date(mongo_host,mongo_port,user_str,date,mongo_base);
     //std::cout<<rules_list<<" "<<user_str<<std::endl;
     std::vector<std::string> vect_rule_list=rule_list_to_vector(rules_list);
@@ -38,8 +39,11 @@ void libAlainPeters::do_what_you_do(std::string date){
       //std::cout<<vect_rule_list[j]<<std::endl;
       std::vector<std::string> vector_streams=stream_list_to_vector(apeters::Mongodb::get_streams_of_rules_and_coll_at_a_date(mongo_host,mongo_port,user_str,vect_rule_list[j],date,mongo_base));
       //std::cout<<"vect stream size "<<vector_streams.size()<<std::endl;
+      for(size_t z(0);z<vector_streams.size();++z)
+	//std::cout<<vector_streams[z]<<std::endl;
       us.addrules(vect_rule_list[j],find_prio(vect_rule_list[j]),vector_streams);
     }
+    //std::cout<<"asdasd"<<std::endl;
     if(vect_rule_list.size()>0){
       users.push_back(us);	    
     }  
