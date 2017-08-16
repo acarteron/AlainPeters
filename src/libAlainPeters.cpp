@@ -39,8 +39,8 @@ void libAlainPeters::do_what_you_do(std::string date){
       //std::cout<<vect_rule_list[j]<<std::endl;
       std::vector<std::string> vector_streams=stream_list_to_vector(apeters::Mongodb::get_streams_of_rules_and_coll_at_a_date(mongo_host,mongo_port,user_str,vect_rule_list[j],date,mongo_base));
       //std::cout<<"vect stream size "<<vector_streams.size()<<std::endl;
-      for(size_t z(0);z<vector_streams.size();++z)
-	//std::cout<<vector_streams[z]<<std::endl;
+      // for(size_t z(0);z<vector_streams.size();++z)
+      // 	std::cout<<vector_streams[z]<<std::endl;
       us.addrules(vect_rule_list[j],find_prio(vect_rule_list[j]),vector_streams);
     }
     //std::cout<<"asdasd"<<std::endl;
