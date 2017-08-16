@@ -11,6 +11,8 @@ namespace apeters{
     nlohmann::json role_obj;
     std::string location="";
     std::string kind="";
+    std::string timestamp="";
+    std::string status="";
   public:
     std::string getLocation()const ;
     std::string getKind()const ;

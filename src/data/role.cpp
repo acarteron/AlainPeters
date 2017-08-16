@@ -7,8 +7,13 @@ namespace apeters{
     nlohmann::json role;
     location=j["role"]["location"].get<std::string>();
     kind=j["role"]["kind"].get<std::string>();
+    timestamp=j["timestamp"]["$numberLong"].get<std::string>();
+    status=j["status"].get<std::string>();
+
     role["location"]=location;
     role["kind"]=kind;
+    role["timestamp"]=timestamp;
+    role["status"]=status;
     role_obj["role"]=role;
   }
   std::shared_ptr<nlohmann::json> Role::get_role_obj(){

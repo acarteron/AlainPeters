@@ -1,6 +1,6 @@
 #include "data/rule.hh"
 #include "Utils.hpp"
-
+#include <iostream>
 namespace apeters{
   static bool sortRuleByRole(Rule_Instance rule1_,Rule_Instance rule2_){
     if(rule1_.getRoles()[0].getLocation().compare(rule2_.getRoles()[0].getLocation())==0){
@@ -19,7 +19,7 @@ namespace apeters{
       std::string timestamp=j["timestamp"]["$numberLong"].get<std::string>();
       for (nlohmann::json::iterator it = j["events"].begin();
 	   it != j["events"].end(); ++it) {
-	//std::cout<<*it<<std::endl;
+	//std::cout<<it.value().dump()<<std::endl;
 	tmp_stream.push_back(it.value().dump());
       }
       rul.set_roles(timestamp,tmp_stream);
